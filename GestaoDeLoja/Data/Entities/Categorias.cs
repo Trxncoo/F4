@@ -8,7 +8,8 @@ namespace GestaoDeLoja.Data.Entities
         public string? Nome { get; set; }
         public int? Ordem { get; set; }
         public string? UrlImagem { get; set; }
-        //public byte[]? Imagem { get; set; }
+        
+        public byte[]? Imagem { get; set; }
 
         [NotMapped]
         public IFormFile? ImageFile { get; set; }

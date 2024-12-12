@@ -1,0 +1,64 @@
+﻿@page "/categorias/create"
+@using Microsoft.EntityFrameworkCore
+@using GestaoDeLoja.Data.Entities
+@inject IDbContextFactory<GestaoDeLoja.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Categorias</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @if (Categorias.UrlImagem is not null)
+        {
+            <img src="@Categorias.UrlImagem" width="200"/>
+        }
+        else
+        {
+            <img src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_3x4.jpg" width="200"/>
+        }
+        <EditForm method="post" Model="Categorias" OnValidSubmit="AddCategorias" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome:</label> 
+                <InputText id="nome" @bind-Value="Categorias.Nome" class="form-control" /> 
+                <ValidationMessage For="() => Categorias.Nome" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="ordem" class="form-label">Ordem:</label> 
+                <InputNumber id="ordem" @bind-Value="Categorias.Ordem" class="form-control" /> 
+                <ValidationMessage For="() => Categorias.Ordem" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="urlimagem" class="form-label">UrlImagem:</label> 
+                <InputText id="urlimagem" @bind-Value="Categorias.UrlImagem" class="form-control" /> 
+                <ValidationMessage For="() => Categorias.UrlImagem" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/categorias">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Categorias Categorias { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddCategorias()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Categorias.Add(Categorias);
+
+        Categorias.UrlImagem = Categorias.ImageFile.FileName;
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/categorias");
+    }
+}

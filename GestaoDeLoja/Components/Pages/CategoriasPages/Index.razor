@@ -1,0 +1,40 @@
+﻿@page "/categorias"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using GestaoDeLoja.Data.Entities
+@using GestaoDeLoja.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<GestaoDeLoja.Data.ApplicationDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="categorias/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Categorias">
+    <TemplateColumn Context="categorias">
+        <img src="@categorias.UrlImagem" width="100"/>
+    </TemplateColumn>
+    <PropertyColumn Property="categorias => categorias.Nome" />
+    <PropertyColumn Property="categorias => categorias.Ordem" />
+
+    <TemplateColumn Context="categorias">
+        <a href="@($"categorias/edit?id={categorias.Id}")">Edit</a> |
+        <a href="@($"categorias/details?id={categorias.Id}")">Details</a> |
+        <a href="@($"categorias/delete?id={categorias.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
